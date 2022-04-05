@@ -122,12 +122,12 @@ func SignUp() gin.HandlerFunc {
 		user.ID = primitive.NewObjectID()
 		user.User_ID = user.ID.Hex()
 
-		token, refreshToken, _ = generate.TokenGenerator(*user.Email, *user.First_Name, *user.Last_Name, user.User_ID)
+		token, refreshToken, _ := generate.TokenGenerator(*user.Email, *user.First_Name, *user.Last_Name, user.User_ID)
 		user.Token = &token
 		user.Refresh_Token = &refreshToken
 		user.UserCart = make([]models.ProductUser, 0)
 		user.Address_Details = make([]models.Address, 0)
-		user.Order_Status = make([]models.Order, 0)
+		user.Order_Details = make([]models.Order, 0)
 		_, insertErr := UserCollection.InsertOne(ctx, user)
 		if insertErr != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "the user did not get created"})
@@ -208,7 +208,7 @@ func SearchProduct() gin.HandlerFunc {
 
 		cursor, err := ProductCollection.Find(ctx, bson.D{{}})
 		if err != nil {
-			c.IntendedJSON(http.StatusInternalServerError, "something went wrong, please try after some time")
+			c.IndentedJSON(http.StatusInternalServerError, "something went wrong, please try after some time")
 			return
 		}
 
@@ -224,13 +224,13 @@ func SearchProduct() gin.HandlerFunc {
 
 		if err := cursor.err(); err != nil {
 			log.Println(err)
-			c.IntendedJSON(400, "invalid")
+			c.IndentedJSON(400, "invalid")
 			return
 		}
 
 		defer cancel()
 
-		c.IntendedJSON(200, productList)
+		c.IndentedJSON(200, productList)
 	}
 
 }
@@ -260,14 +260,14 @@ func SearchProductByQuery() gin.HandlerFunc {
 		searchQueryDB, err := ProductCollection.Find(ctx, bson.M{"product_name": bson.M{"$regex": queryParam}})
 
 		if err != nil {
-			c.IntendedJSON(404, "Something went wrong while fetching the data")
+			c.IndentedJSON(404, "Something went wrong while fetching the data")
 			return
 		}
 
 		err = searchQueryDB.All(ctx, &searchProducts)
 		if err != nil {
 			log.Println(err)
-			c.IntendedJSON(400, "invalid")
+			c.IndentedJSON(400, "invalid")
 			return
 		}
 
@@ -280,6 +280,6 @@ func SearchProductByQuery() gin.HandlerFunc {
 		}
 
 		defer cancel()
-		c.IntendedJSON(200, searchProducts)
+		c.IndentedJSON(200, searchProducts)
 	}
 }

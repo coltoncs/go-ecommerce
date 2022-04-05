@@ -24,10 +24,10 @@ func main(){
 	routes.UserRoutes(router)
 	router.Use(middleware.Authentication())
 
-	router.Get("/addtocart", app.AddToCart())
-	router.Get("/removeitem", app.RemoveItem())
-	router.Get("/checkout", app.BuyFromCart())
-	router.Get("/instantbuy", app.InstantBuy())
+	router.GET("/addtocart", app.AddToCart())
+	router.GET("/removeitem", app.RemoveItem())
+	router.GET("/checkout", app.BuyFromCart())
+	router.GET("/instantbuy", app.InstantBuy())
 
 	log.Fatal(router.Run(":" + port))
 }
